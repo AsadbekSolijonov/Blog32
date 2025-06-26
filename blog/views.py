@@ -1,4 +1,3 @@
-from django.http import HttpResponse
 from django.shortcuts import render
 from random import randint
 from blog.models import Blog
@@ -13,7 +12,7 @@ def home(request):
         "a": a,
         "b": b,
         "c": c,
-        "blogs": Blog.objects.all()
+        "blogs": Blog.objects.all()  # 'SELECT "blog_blog"."id", "blog_blog"."name" FROM "blog_blog"'
     }
 
     return render(request, 'base.html', context=context)
