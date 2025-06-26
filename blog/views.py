@@ -15,4 +15,4 @@ def home(request):
         "blogs": Blog.objects.all()  # 'SELECT "blog_blog"."id", "blog_blog"."name" FROM "blog_blog"'
     }
 
-    return render(request, 'base.html', context=context)
+    return render(request, 'blog/home.html', context=context)
