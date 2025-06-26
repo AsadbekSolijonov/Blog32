@@ -4,6 +4,13 @@
     Home
 {% endblock %}
 
+{% block search %}
+    <form class="d-flex" role="search">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
+        <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+{% endblock %}
+
 {% block content %}
     <main>
         {#Section#}
@@ -20,7 +27,7 @@
         </section>
         {#Blogs#}
         <p class="fs-3 fw-medium container">Bloglar {{ blogs.count }} ta</p>
-        <div class="album py-5 bg-body-tertiary my-2">
+        <div class="album py-5 bg-body-tertiary ">
             <div class="container">
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
                     {% for blog in blogs %}
@@ -40,7 +47,8 @@
                                 <div class="card-body"><p class="card-text">{{ blog.content|truncatechars:70 }}</p>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="btn-group">
-                                            <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                                            <a href="{% url 'detail' blog.id %}" type="button"
+                                               class="btn btn-sm btn-outline-secondary">View</a>
                                             <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
                                         </div>
                                         <small class="text-body-secondary">9 mins</small></div>

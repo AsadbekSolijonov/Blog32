@@ -24,7 +24,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">About</a>
@@ -47,17 +47,16 @@
                     <a class="nav-link disabled" aria-disabled="true">Disabled</a>
                 </li>
             </ul>
-            <form class="d-flex" role="search">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
-                <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
+            {% block search %}
+            {% endblock %}
         </div>
     </div>
 </nav>
+<div class="container my-2">
+    {% block content %}
 
-{% block content %}
-
-{% endblock %}
+    {% endblock %}
+</div>
 
 <footer class="footer mt-auto py-3 bg-body-tertiary">
     <div class="container"><span class="text-body-secondary">Place sticky footer content here.</span></div>
