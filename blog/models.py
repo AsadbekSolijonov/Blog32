@@ -1,5 +1,7 @@
 from django.db import models
 
+from config.settings import AUTH_USER_MODEL
+
 
 class Blog(models.Model):
     TYPES = {
@@ -9,6 +11,7 @@ class Blog(models.Model):
         "Personal development": "Personal development",
         "IT": "IT"
     }
+    author = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)  # lazy load
     title = models.CharField(max_length=200)
     content = models.TextField()
     photo = models.ImageField(upload_to='blog_images', blank=True, null=True)

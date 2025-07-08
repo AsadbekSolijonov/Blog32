@@ -51,8 +51,11 @@
                                         <div class="btn-group">
                                             <a href="{% url 'detail' blog.id %}" type="button"
                                                class="btn btn-sm btn-outline-secondary">View</a>
+
+                                            {% if user == blog.author %}
                                             <a href="{% url 'update' blog.id %}" type="button"
                                                class="btn btn-sm btn-outline-secondary">Edit</a>
+                                            {% endif %}
                                         </div>
                                         <small class="text-body-secondary">{{ blog.created_at|timesince }} ago</small>
                                     </div>

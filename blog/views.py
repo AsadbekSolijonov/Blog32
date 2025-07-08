@@ -24,13 +24,13 @@ def home(request):
 
 @login_required
 def home_out(request):
-    blogs = Blog.objects.filter(published=False)
+    blogs = Blog.objects.filter(published=False, author=request.user)
     search_published_blog = request.GET.get('search_unpublished_blog')
 
     if search_published_blog:
         blogs = Blog.objects.filter(
             Q(title__icontains=search_published_blog) | Q(content__icontains=search_published_blog),
-            published=False)
+            published=False, author=request.user)
     context = {
         "blogs": blogs  # 'SELECT "blog_blog"."id", "blog_blog"."name" FROM "blog_blog"'
     }
@@ -42,7 +42,9 @@ def create(request):
     if request.method == 'POST':
         form = BlogForms(request.POST, request.FILES)
         if form.is_valid():
-            blog = form.save()
+            blog = form.save(commit=False)
+            blog.author = request.user
+            blog.save()
             if blog.published:
                 return redirect('home')
             return redirect('home_out')
@@ -63,7 +65,7 @@ def detail(request, blog_id):
 
 
 def update(request, blog_id):
-    blog = get_object_or_404(Blog, id=blog_id)
+    blog = get_object_or_404(Blog, id=blog_id, author=request.user)
     if request.method == 'POST':
         form = BlogForms(request.POST, request.FILES, instance=blog)
         if form.is_valid():
@@ -77,7 +79,7 @@ def update(request, blog_id):
 
 
 def delete(request, blog_id):
-    blog = get_object_or_404(Blog, id=blog_id)
+    blog = get_object_or_404(Blog, id=blog_id, author=request.user)
     blog.delete()
     return redirect('home')
 
