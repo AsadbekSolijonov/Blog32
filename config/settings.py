@@ -35,7 +35,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'blog',  # register qilamiz
+
+    # apps
+    'blog',
+    'account',
+
+    # pip installs
     'django_cleanup',
     'crispy_forms',
     'crispy_bootstrap5',
@@ -124,3 +129,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 CRISPY_ALLOWED_TEMPLATES_PACKS = 'bootstrap5'
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
+
+AUTH_USER_MODEL = 'account.CustomUser'
+
+LOGIN_REDIRECT_URL = 'home'
+LOGIN_URL = 'login'

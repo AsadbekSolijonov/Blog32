@@ -5,8 +5,9 @@
 {% endblock %}
 
 {% block search %}
-    <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Published blogs" aria-label="Search"/>
+    <form method="GET" class="d-flex" role="search">
+        <input name="search_published_blog" class="form-control me-2" type="search" placeholder="Published blogs"
+               aria-label="Search"/>
         <button class="btn btn-outline-success" type="submit">Search</button>
     </form>
 {% endblock %}
@@ -50,9 +51,11 @@
                                         <div class="btn-group">
                                             <a href="{% url 'detail' blog.id %}" type="button"
                                                class="btn btn-sm btn-outline-secondary">View</a>
-                                            <a href="{% url 'update' blog.id %}" type="button" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                            <a href="{% url 'update' blog.id %}" type="button"
+                                               class="btn btn-sm btn-outline-secondary">Edit</a>
                                         </div>
-                                        <small class="text-body-secondary">{{ blog.created_at|timesince }} ago</small></div>
+                                        <small class="text-body-secondary">{{ blog.created_at|timesince }} ago</small>
+                                    </div>
                                 </div>
                             </div>
                         </div>

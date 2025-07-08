@@ -29,6 +29,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        {%  if user.is_authenticated %}
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
@@ -56,9 +57,28 @@
             </ul>
             {% block search %}
             {% endblock %}
+            <ul class="navbar-nav mb-2 mb-lg-0">
+                <li class="nav-item mx-2" >
+                    <a href="#" class="nav-link">{{ user.username|capfirst }} Profile</a>
+                </li>
+                <li class="nav-item">
+                    <form method="POST" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-danger">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        {%  else %}
+            <ul class="navbar-nav mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a href="{% url 'login' %}" class="nav-link">Login</a>
+                </li>
+            </ul>
+        {% endif %}
         </div>
     </div>
 </nav>
+
 <div class="container my-2">
     {% block content %}
 

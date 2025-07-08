@@ -5,8 +5,8 @@
 {% endblock %}
 
 {% block search %}
-    <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Not published blogs" aria-label="Search"/>
+    <form method="GET" class="d-flex" role="search">
+        <input name="search_unpublished_blog" class="form-control me-2" type="search" placeholder="Not published blogs" aria-label="Search"/>
         <button class="btn btn-outline-success" type="submit">Search</button>
     </form>
 {% endblock %}
