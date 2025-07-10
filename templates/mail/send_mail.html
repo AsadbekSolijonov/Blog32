@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Send mail
+{% endblock %}
+
+{% block content %}
+    <div class="card my-2">
+    <div class="card-header">
+        <p class="fs-3 text-primary">Send Mail</p>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="{% url 'test_email' %}">
+        {% csrf_token %}
+        <label class="my-2">Subject*</label>
+        <input name="subject" type="text" class="form-control" placeholder="Subject" aria-label="Subject"
+               aria-describedby="addon-wrapping" required>
+        <label class="my-2">Message*</label>
+        <textarea name="message" rows="5" type="text" class="form-control" placeholder="Message" aria-label="Message"
+                  aria-describedby="addon-wrapping" required></textarea>
+
+        <label class="my-2">to*</label>
+        <input name="email" type="email" class="form-control" placeholder="example@gmail.com" aria-label="Subject"
+               aria-describedby="addon-wrapping" required>
+        <button type="submit" class="btn btn-primary my-3">Send Email</button>
+    </form>
+    </div>
+    </div>
+
+{% endblock %}

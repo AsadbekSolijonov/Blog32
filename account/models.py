@@ -26,3 +26,5 @@ class Profile(models.Model):
 
     class Meta:
         db_table = 'auth_user_profile'
+
+

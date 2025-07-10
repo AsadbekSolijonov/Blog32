@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.core.mail import send_mail
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
@@ -46,3 +47,21 @@ def change_profile(request):
         'p_form': profile_form
     }
     return render(request, 'account/change_profile.html', context=context)
+
+
+def test_send_mail(request):
+    subject = request.POST.get('subject')
+    message = request.POST.get('message')
+    to_email = request.POST.get('email')
+    if request.method == 'POST':
+        send_mail(
+            subject,
+            message,
+            'iamsolijonovasadbek@gmail.com',
+            [to_email],
+            fail_silently=True
+        )
+        return render(request, 'mail/send_mail_success.html')
+
+    else:
+        return render(request, 'mail/send_mail.html')
