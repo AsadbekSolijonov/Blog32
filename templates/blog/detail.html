@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
+{% load crispy_forms_tags %}
 {% block title %}
     Detail
 {% endblock %}
@@ -19,5 +20,77 @@
     {% if blog.photo %}
         <img class="img-h-255" src="{{ blog.photo.url }}" alt="rasm">
     {% endif %}
-    <p class="my-2"><i class="bi bi-calendar2-date"></i> {{ blog.created_at|date:"D d M Y ⏰ f A" }}</p>
+    <p class="my-2"><i class="bi bi-calendar2-date"></i> {{ blog.created_at|date:"D d M Y ⏰ f A" }} </p>
+    <p class="my-4">
+        <a href="{% url 'blog_is_liked' blog.id %}" class="text-danger">{% if request_user_is_liked %}
+            <i class="bi bi-heart-fill"></i>{% else %}<i class="bi bi-heart"></i>{% endif %}</a>
+        {{ user_likes_count }} likes  &nbsp;&nbsp;&nbsp;&nbsp;
+    <span class="ml-3"><i class="bi bi-chat-text"></i> {{ comments.count }} comments </span>
+
+    </p>
+
+    <!-- Comments -->
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-12 col-lg-12">
+            <div class="card text-body" style="border: none;">
+                <div class="card-body" style="padding: 20px 0;">
+                    <div class="grid">
+                        <div class="row">
+                            <div class="col-1  d-flex justify-content-center">
+                                <img
+                                        class="rounded-circle shadow-1-strong"
+                                        src="{{ user.profile.image.url }}" alt="rasm"
+                                        width="60"
+                                        height="60"
+                                        style="object-fit: cover">
+                            </div>
+                            <div class="col-11">
+                                <form method="POST" action="{% url 'detail' blog.id %}">
+                                    {% csrf_token %}
+                                    {{ comment_form|crispy }}
+                                    <button type="submit" class="btn btn-primary float-end">Post comment</button>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                </div>
+
+                <div class="" style="height: 400px; overflow-y: auto; ">
+                    {% for comment in comments %}
+                        <div class="card-body p-4">
+                            <div class="d-flex flex-start">
+                                <img class="rounded-circle shadow-1-strong me-3"
+                                     src="{{ comment.user.profile.image.url }}" alt="avatar"
+                                     width="60"
+                                     height="60"
+                                     style="object-fit: cover"
+                                />
+                                <div>
+                                    <h6 class="fw-bold mb-1">{{ comment.user.username }}</h6>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <p class="mb-0">
+                                            {{ comment.created_at|timesince }} ago
+                                        </p>
+                                        <a href="#!" class="link-muted"><i class="fas fa-pencil-alt ms-2"></i></a>
+                                        <a href="#!" class="text-success"><i class="fas fa-redo-alt ms-2"></i></a>
+                                        <a href="#!" class="link-danger"><i class="fas fa-heart ms-2"></i></a>
+                                    </div>
+                                    <p class="mb-0">
+                                        {{ comment.message }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="my-0"/>
+                    {% empty %}
+                        Empty Comments
+                    {% endfor %}
+
+                </div>
+
+            </div>
+        </div>
+    </div>
 {% endblock %}

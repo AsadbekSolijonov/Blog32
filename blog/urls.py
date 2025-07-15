@@ -8,4 +8,5 @@ urlpatterns = [
     path('<int:blog_id>/detail', views.detail, name='detail'),
     path('<int:blog_id>/update', views.update, name='update'),
     path('<int:blog_id>/delete', views.delete, name='delete'),
+    path('<int:blog_id>/is_liked', views.like_dislike, name='blog_is_liked'),
 ]
