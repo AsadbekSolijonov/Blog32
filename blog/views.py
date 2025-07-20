@@ -1,12 +1,20 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
 from blog.forms import BlogForms, CommentForm
-from blog.models import Blog, Like
+from blog.models import Blog, Like, Comment
+from django.contrib.auth.models import Permission
 
 
 @login_required
 def home(request):
+    perm = Permission.objects.get(codename='view_blog')
+    request.user.user_permissions.add(perm)
+    if not request.user.has_perm('blog.view_blog'):
+        return HttpResponse("Sizni ko'rishga huquqingiz yo'q!")
     blogs = Blog.objects.filter(published=True)
     search_published_blog = request.GET.get('search_published_blog')
 
@@ -14,11 +22,34 @@ def home(request):
         blogs = Blog.objects.filter(
             Q(title__icontains=search_published_blog) | Q(content__icontains=search_published_blog),
             published=True)
-
+    type_choices = dict(Blog._meta.get_field('type').choices)
+    keys = type_choices.keys()
+    values = type_choices.values()
+    paginator = Paginator(blogs, 3)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     context = {
-        "blogs": blogs  # 'SELECT "blog_blog"."id", "blog_blog"."name" FROM "blog_blog"'
+        "page_obj": page_obj,  # 'SELECT "blog_blog"."id", "blog_blog"."name" FROM "blog_blog"'
+        "filter_keys": keys,
+        "filter_values": values
     }
 
+    return render(request, 'blog/home.html', context=context)
+
+
+def home_filter(request, blog_type):
+    blogs = Blog.objects.filter(type=blog_type)
+
+    type_choices = dict(Blog._meta.get_field('type').choices)
+    keys = type_choices.keys()
+    values = type_choices.values()
+
+    context = {
+        "blogs": blogs,  # 'SELECT "blog_blog"."id", "blog_blog"."name" FROM "blog_blog"'
+        "filter_keys": keys,
+        "filter_values": values,
+        "type": blog_type
+    }
     return render(request, 'blog/home.html', context=context)
 
 
@@ -39,6 +70,8 @@ def home_out(request):
 
 
 def create(request):
+    if not request.user.has_perm('blog.add_blog'):
+        return HttpResponse('Sizni blog qo`shishga huquqingiz yo`q!')
     if request.method == 'POST':
         form = BlogForms(request.POST, request.FILES)
         if form.is_valid():
@@ -58,7 +91,7 @@ def create(request):
 
 def detail(request, blog_id):
     blog = get_object_or_404(Blog, id=blog_id)
-    comments = blog.comments.all()
+    comments = blog.comments.filter(blog=blog).order_by('tree_id', 'lft')
     comment_form = CommentForm(request.POST or None)
     if request.method == 'POST':
         if comment_form.is_valid():
@@ -113,6 +146,32 @@ def delete(request, blog_id):
     blog = get_object_or_404(Blog, id=blog_id, author=request.user)
     blog.delete()
     return redirect('home')
+
+
+def reply_comment(request, blog_id, comment_id):
+    blog = get_object_or_404(Blog, id=blog_id)
+    comment = get_object_or_404(Comment, id=comment_id, blog=blog)
+
+    if request.method == 'POST':
+        reply_comment = CommentForm(request.POST)
+        if reply_comment.is_valid():
+            reply = reply_comment.save(commit=False)
+            reply.blog = blog
+            reply.user = request.user
+            reply.parent = comment
+            reply.save()
+            messages.success(request, 'Reply Comment yozildi!')
+            return redirect('detail', blog_id=blog_id)
+    else:
+        reply_comment = CommentForm()
+
+    context = {
+
+        "reply_comment": reply_comment,
+        "blog": blog,
+        "comment": comment
+    }
+    return render(request, 'blog/reply_comment.html', context=context)
 
 # lookup expr
 # > 3  field__gt = 3

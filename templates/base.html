@@ -18,6 +18,8 @@
 
     <!-- Local CSS -->
     <link rel="stylesheet" href="{% static 'blog/css/main.css' %}">
+    {% block header %}
+    {% endblock %}
 </head>
 <body class="d-flex flex-column h-100">
 
@@ -86,7 +88,7 @@
         {% elif message.tags == 'warning' %}
             <i class="bi bi-exclamation-triangle-fill"></i>
         {% endif %}
-        <strong>{{ message.tags|upper}}: </strong> {{ message }}
+        <strong>{{ message.tags|upper }}: </strong> {{ message }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 {% endfor %}

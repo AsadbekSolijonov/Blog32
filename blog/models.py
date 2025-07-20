@@ -1,4 +1,7 @@
 from django.db import models
+from django_ckeditor_5.fields import CKEditor5Field
+from mptt.fields import TreeForeignKey
+from mptt.models import MPTTModel
 
 from config.settings import AUTH_USER_MODEL
 
@@ -13,7 +16,7 @@ class Blog(models.Model):
     }
     author = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)  # lazy load
     title = models.CharField(max_length=200)
-    content = models.TextField()
+    content = CKEditor5Field('Text', config_name='extends')
     photo = models.ImageField(upload_to='blog_images', blank=True, null=True)
     type = models.CharField(max_length=50, choices=TYPES, default="Journal")
     created_at = models.DateTimeField(auto_now_add=True)
@@ -34,9 +37,10 @@ class Like(models.Model):
         return f"Anonim: {self.is_liked}"
 
 
-class Comment(models.Model):
+class Comment(MPTTModel):
     user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     blog = models.ForeignKey(Blog, on_delete=models.CASCADE, related_name='comments')
+    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='child')
     message = models.CharField(max_length=500)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -45,5 +49,5 @@ class Comment(models.Model):
             return F"{self.user.username}: {self.message[:30]}"
         return F"{self.message[:30]}"
 
-    class Meta:
-        ordering = ['-created_at']
+    class MPTTMeta:
+        order_insertion_by = ['id']

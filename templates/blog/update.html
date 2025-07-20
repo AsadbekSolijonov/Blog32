@@ -6,6 +6,10 @@
     Update
 {% endblock %}
 
+{% block header %}
+    {{ form.media }} # Required for styling/js to make ckeditor5 work
+{% endblock %}
+
 
 {% block content %}
     <div class="card">

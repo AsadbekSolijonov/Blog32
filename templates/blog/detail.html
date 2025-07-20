@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
 {% load crispy_forms_tags %}
+{% load mptt_tags %}
+
 {% block title %}
     Detail
 {% endblock %}
@@ -12,23 +14,22 @@
     |
     &nbsp;
     <i class="bi bi-tags-fill"></i>
-    <span class="badge rounded-pill text-bg-secondary"> #{{ blog.type }}</span>
+    <a href="{% url 'home_filter' blog.type %}"><span
+            class="badge rounded-pill text-bg-secondary"> #{{ blog.type }}</span></a>
     <p class="my-5">
-        {{ blog.content }}
+        {{ blog.content|safe }}
     </p>
     <p class="float-end">{{ blog.content|wordcount }} words</p>
-    {% if blog.photo %}
-        <img class="img-h-255" src="{{ blog.photo.url }}" alt="rasm">
-    {% endif %}
     <p class="my-2"><i class="bi bi-calendar2-date"></i> {{ blog.created_at|date:"D d M Y ⏰ f A" }} </p>
-    <p class="my-4">
+    <p class="my-4 fs-5">
         <a href="{% url 'blog_is_liked' blog.id %}" class="text-danger">{% if request_user_is_liked %}
             <i class="bi bi-heart-fill"></i>{% else %}<i class="bi bi-heart"></i>{% endif %}</a>
-        {{ user_likes_count }} likes  &nbsp;&nbsp;&nbsp;&nbsp;
-    <span class="ml-3"><i class="bi bi-chat-text"></i> {{ comments.count }} comments </span>
+        {{ user_likes_count }} likes &nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="ml-3"><i class="bi bi-chat-text"></i> {{ comments.count }} comments </span>
 
     </p>
-
+    <p class="fs-3">Write a comment</p>
+    <hr>
     <!-- Comments -->
     <div class="row d-flex justify-content-center">
         <div class="col-md-12 col-lg-12">
@@ -54,43 +55,48 @@
                             </div>
                         </div>
                     </div>
-                    <hr>
                 </div>
 
-                <div class="" style="height: 400px; overflow-y: auto; ">
-                    {% for comment in comments %}
-                        <div class="card-body p-4">
-                            <div class="d-flex flex-start">
-                                <img class="rounded-circle shadow-1-strong me-3"
-                                     src="{{ comment.user.profile.image.url }}" alt="avatar"
-                                     width="60"
-                                     height="60"
-                                     style="object-fit: cover"
-                                />
-                                <div>
-                                    <h6 class="fw-bold mb-1">{{ comment.user.username }}</h6>
-                                    <div class="d-flex align-items-center mb-3">
-                                        <p class="mb-0">
-                                            {{ comment.created_at|timesince }} ago
-                                        </p>
-                                        <a href="#!" class="link-muted"><i class="fas fa-pencil-alt ms-2"></i></a>
-                                        <a href="#!" class="text-success"><i class="fas fa-redo-alt ms-2"></i></a>
-                                        <a href="#!" class="link-danger"><i class="fas fa-heart ms-2"></i></a>
-                                    </div>
-                                    <p class="mb-0">
-                                        {{ comment.message }}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <hr class="my-0"/>
-                    {% empty %}
-                        Empty Comments
-                    {% endfor %}
+                <p class="fs-3"> All Comments {{ comments.count }}</p>
+                <hr>
 
+                <div class="" style="height: 400px; overflow-y: auto; ">
+                    {% if comments %}
+                        {% recursetree comments %}
+                            <div class="comment-box" style="margin-left: {{ node.level|add:0 }}0px;">
+                                <div class="grid">
+                                    <div class="row">
+                                        <div class="col-1 d-flex flex-row-reverse">
+                                            <img src="{{ node.user.profile.image.url }}" alt=""
+                                                 style="width: 60px; height: 60px; object-fit: cover; border-radius: 50%;">
+
+                                        </div>
+                                        <div class="col-11 d-flex flex-row">
+                                            <div>
+                                                <p><strong>{{ node.user }}</strong>: </p>
+                                                <p>{{ node.message }}
+                                                    <a class="text-primary"
+                                                       href="{% url 'reply_comment' blog.id node.id %}">Reply</a>
+                                                </p>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {% if not node.is_leaf_node %}
+                                    {{ children }}
+                                {% endif %}
+                            </div>
+                        {% endrecursetree %}
+                    {% else %}
+                        <p class="fs-5">Hozircha sharhlar mavjud emas!</p>
+                    {% endif %}
                 </div>
 
             </div>
         </div>
     </div>
+
+
 {% endblock %}

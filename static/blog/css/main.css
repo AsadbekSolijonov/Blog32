@@ -1,3 +1,88 @@
 .img-h-255 {
     height: 255px;
 }
+
+.comment-box {
+    border-left: 2px solid #ccc;
+    margin-top: 10px;
+    padding-left: 10px;
+}
+
+blockquote {
+    position: relative;
+    background: #f9f9f9;
+    border-left: 5px solid #4a90e2;
+    margin: 2rem 0;
+    padding: 1.2rem 1.5rem;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: #333;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease-in-out;
+}
+
+blockquote::before {
+    content: "“";
+    font-size: 3rem;
+    color: #4a90e2;
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    line-height: 1;
+    font-family: Georgia, serif;
+}
+
+blockquote p {
+    margin: 0;
+    padding-left: 1.5rem;
+}
+
+figure.table {
+    overflow-x: auto;
+    margin: 2rem auto; /* markazlashtirish */
+    max-width: 800px; /* ixtiyoriy, o‘lcham chegarasi */
+}
+
+figure.table table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+    font-family: "Segoe UI", sans-serif;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+figure.table table thead {
+    background-color: #f4f6f8;
+}
+
+figure.table table tr {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+figure.table table tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+figure.table table tr:hover {
+    background-color: #eef6ff;
+    transition: background 0.2s ease-in-out;
+}
+
+figure.table table td {
+    padding: 12px 16px;
+    font-size: 15px;
+    color: #333;
+    vertical-align: middle;
+}
+
+figure.table table td:first-child {
+    font-weight: bold;
+    color: #4a90e2;
+}
+
+figure.table table td:last-child {
+    white-space: nowrap;
+}
+

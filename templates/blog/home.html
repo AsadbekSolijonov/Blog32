@@ -13,58 +13,112 @@
 {% endblock %}
 
 {% block content %}
-    <main>
-        {#Section#}
-        <section class="py-5 text-center container">
-            <div class="row py-lg-5">
-                <div class="col-lg-6 col-md-8 mx-auto"><h1 class="fw-light">Album example</h1>
-                    <p class="lead text-body-secondary">Something short and leading about the collection below—its
-                        contents,
-                        the creator, etc. Make it short and sweet, but not too short so folks don’t simply skip over it
-                        entirely.</p>
-                    <p><a href="#" class="btn btn-primary my-2">Main call to action</a>
-                        <a href="#" class="btn btn-secondary my-2">Secondary action</a></p></div>
-            </div>
-        </section>
-        {#Blogs#}
-        <span class="fs-3 fw-medium container">Bloglar {{ blogs.count }} ta</span>
-        <a class="btn btn-outline-success float-end" href="{% url 'create' %}">+ Add Blog</a>
-        <div class="album py-5 bg-body-tertiary mt-3">
-            <div class="container">
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                    {% for blog in blogs %}
-                        <div class="col">
-                            <div class="card shadow-sm">
-                                {% if blog.photo %}
-                                    <img style="height: 225px; object-fit: cover;" src="{{ blog.photo.url }}" alt="">
-                                {% else %}
-                                    <svg aria-label="Placeholder: Thumbnail" class="bd-placeholder-img card-img-top"
-                                         height="225"
-                                         preserveAspectRatio="xMidYMid slice" role="img" width="100%"
-                                         xmlns="http://www.w3.org/2000/svg"><title>Placeholder</title>
-                                        <rect width="100%" height="100%" fill="#55595c"></rect>
-                                        <text x="35%" y="50%" fill="#eceeef" dy=".3em">{{ blog.title }}</text>
-                                    </svg>
-                                {% endif %}
-                                <div class="card-body"><p class="card-text">{{ blog.content|truncatechars:70 }}</p>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div class="btn-group">
-                                            <a href="{% url 'detail' blog.id %}" type="button"
-                                               class="btn btn-sm btn-outline-secondary">View</a>
+    <div class="grid">
 
-                                            {% if user == blog.author %}
-                                            <a href="{% url 'update' blog.id %}" type="button"
-                                               class="btn btn-sm btn-outline-secondary">Edit</a>
+        <div class="row">
+            <div class="col-9">
+                <main>
+                    {#Blogs#}
+                    <span class="fs-3 fw-medium container"><span
+                            class="text-primary">{{ type|upper }}</span> Bloglar {{ page_obj|length }} ta</span>
+                    <a class="btn btn-outline-success float-end" href="{% url 'create' %}">+ Add Blog</a>
+                    <div class="album py-5 bg-body-tertiary mt-3">
+                        <div class="container">
+                            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                                {% for blog in page_obj %}
+                                    <div class="col">
+                                        <div class="card shadow-sm">
+                                            {% if blog.photo %}
+                                                <img style="height: 225px; object-fit: cover;"
+                                                     src="{{ blog.photo.url }}" alt="">
+                                            {% else %}
+                                                <svg aria-label="Placeholder: Thumbnail"
+                                                     class="bd-placeholder-img card-img-top"
+                                                     height="225"
+                                                     preserveAspectRatio="xMidYMid slice" role="img" width="100%"
+                                                     xmlns="http://www.w3.org/2000/svg"><title>Placeholder</title>
+                                                    <rect width="100%" height="100%" fill="#55595c"></rect>
+                                                    <text x="35%" y="50%" fill="#eceeef"
+                                                          dy=".3em">{{ blog.title }}</text>
+                                                </svg>
                                             {% endif %}
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div class="btn-group">
+                                                        <a href="{% url 'detail' blog.id %}" type="button"
+                                                           class="btn btn-sm btn-outline-secondary">View</a>
+
+                                                        {% if user == blog.author %}
+                                                            <a href="{% url 'update' blog.id %}" type="button"
+                                                               class="btn btn-sm btn-outline-secondary">Edit</a>
+                                                        {% endif %}
+                                                    </div>
+                                                    <small class="text-body-secondary">{{ blog.created_at|timesince }}
+                                                        ago</small>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <small class="text-body-secondary">{{ blog.created_at|timesince }} ago</small>
                                     </div>
-                                </div>
+                                {% endfor %}
                             </div>
+                            <!-- paginaiton start -->
+                            <ul class="pagination my-4">
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item"><a class="page-link" href="?page=1">&laquo; first</a></li>
+                                    <li class="page-item"><a class="page-link"
+                                                             href="?page={{ page_obj.previous_page_number }}">previous</a>
+                                    </li>
+                                {% endif %}
+
+                                <li class="page-item active">
+                                    <a class="page-link" href="#" aria-current="page">Page {{ page_obj.number }}
+                                        of {{ page_obj.paginator.num_pages }}.</a>
+                                </li>
+
+                                {% if page_obj.has_next %}
+                                    <li class="page-item"><a class="page-link"
+                                                             href="?page={{ page_obj.next_page_number }}">next</a></li>
+                                    <li class="page-item"><a class="page-link"
+                                                             href="?page={{ page_obj.paginator.num_pages }}">last
+                                        &raquo;</a></li>
+                                {% endif %}
+                                </li>
+                            </ul>
+                            <!-- paginaiton end -->
                         </div>
-                    {% endfor %}
+
+
+                    </div>
+                    {#Section#}
+                    <section class="py-5 text-center container">
+                        <div class="row py-lg-5">
+                            <div class="col-lg-6 col-md-8 mx-auto"><h1 class="fw-light">Album example</h1>
+                                <p class="lead text-body-secondary">Something short and leading about the collection
+                                    below—its
+                                    contents,
+                                    the creator, etc. Make it short and sweet, but not too short so folks don’t simply
+                                    skip over it
+                                    entirely.</p>
+                                <p><a href="#" class="btn btn-primary my-2">Main call to action</a>
+                                    <a href="#" class="btn btn-secondary my-2">Secondary action</a></p></div>
+                        </div>
+                    </section>
+                </main>
+            </div>
+            <div class="col-3">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-search"></i> Filters
+                    </div>
+                    <div class="card-body">
+                        {% for key in filter_keys %}
+                            <a href="{% url 'home_filter' key %}"><span
+                                    class="badge text-bg-light">#{{ key }}</span></a>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
+
 {% endblock %}
