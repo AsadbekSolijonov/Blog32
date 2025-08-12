@@ -1,0 +1,35 @@
+from django.utils.translation import gettext as _
+
+MIDDLEWARE = [
+    ...
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    "django.middleware.locale.LocaleMiddleware",  # language muhim
+    'django.middleware.common.CommonMiddleware',
+    ...
+]
+
+
+LANGUAGE_CODE = 'en-us'
+
+LANGUAGES = (
+    ('en', _("Ingliz tili")),
+    ('uz', _("O'zbek tili")),
+    ('ru', _("Rus tili"))
+)
+
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale')
+]
+
+[x] Terminalda
+$ mkdir locale
+$ django-admin makemessages -l uz
+$ django-admin makemessages -l ru
+$ django-admin makemessages -l en
+
+--upgrade
+django-admin makemessages --all
+tarjima qilasizlar o'zingizni tilingizga
+
+--compile
+django-admin compilemessages

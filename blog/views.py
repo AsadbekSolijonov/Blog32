@@ -4,9 +4,13 @@ from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
+from django.utils import translation
+
 from blog.forms import BlogForms, CommentForm
 from blog.models import Blog, Like, Comment
 from django.contrib.auth.models import Permission
+
+from config import settings
 
 
 @login_required
@@ -172,6 +176,13 @@ def reply_comment(request, blog_id, comment_id):
         "comment": comment
     }
     return render(request, 'blog/reply_comment.html', context=context)
+
+
+def set_language(request, language_code):
+    translation.activate(language_code)
+    response = HttpResponse(language_code)
+    response.set_cookie(settings.LANGUAGE_COOKIE_NAME, language_code)
+    return response
 
 # lookup expr
 # > 3  field__gt = 3

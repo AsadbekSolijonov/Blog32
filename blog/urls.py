@@ -11,4 +11,5 @@ urlpatterns = [
     path('<int:blog_id>/delete', views.delete, name='delete'),
     path('<int:blog_id>/is_liked', views.like_dislike, name='blog_is_liked'),
     path('<int:blog_id>/<int:comment_id>/reply', views.reply_comment, name='reply_comment'),
+    path('set_language/<str:language_code>/', views.set_language, name='set_language')
 ]

@@ -1,14 +1,18 @@
 {% extends 'base.html' %}
-
+{% load i18n %}
 {% block title %}
     Home
 {% endblock %}
 
 {% block search %}
+    {% get_current_language as LANGUAGE_CODE %}
+    {{ LANGUAGE_CODE }}
     <form method="GET" class="d-flex" role="search">
         <input name="search_published_blog" class="form-control me-2" type="search" placeholder="Published blogs"
                aria-label="Search"/>
-        <button class="btn btn-outline-success" type="submit">Search</button>
+        <button class="btn btn-outline-success" type="submit">
+            {% trans "Search" %}
+        </button>
     </form>
 {% endblock %}
 
